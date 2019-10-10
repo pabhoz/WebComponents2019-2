@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="import" href="./components/Weather/Weather.html">
+</head>
+
+<body>
+    <style>
+        * {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tr,
+        .br,
+        .tl,
+        .bl {
+            margin: 10px;
+        }
+
+        .tr {
+            position: absolute;
+            top: 0%;
+            right: 0%;
+            ;
+        }
+
+        .br {
+            position: absolute;
+            bottom: 0%;
+            right: 0%;
+            ;
+        }
+
+        .tl {
+            position: absolute;
+            top: 0%;
+            left: 0%;
+            ;
+        }
+
+        .bl {
+            position: absolute;
+            bottom: 0%;
+            left: 0%;
+            ;
+        }
+    </style>
+    <app-weather id="primero" class="tr"></app-weather>
+    <app-weather id="segundo" class="br"></app-weather>
+    <app-weather id="tercero" class="bl"></app-weather>
+    <app-weather id="cuarto" class="tl"></app-weather>
+    <script>
+        loadTemp("https://community-open-weather-map.p.rapidapi.com/weather?callback=test&id=2172797&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html&q=Cali%2Cco","#primero");
+        loadTemp("https://community-open-weather-map.p.rapidapi.com/weather?callback=test&id=2172797&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html&q=Pasto%2Cco","#segundo");
+        loadTemp("https://community-open-weather-map.p.rapidapi.com/weather?callback=test&id=2172797&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html&q=San%20Francisco%2Cus","#tercero");
+        loadTemp("https://community-open-weather-map.p.rapidapi.com/weather?callback=test&id=2172797&units=%22metric%22%20or%20%22imperial%22&mode=xml%2C%20html&q=Caracas%2Cve","#cuarto");
+        function loadTemp(url,elemento) {
+            fetch(url, {
+            "method": "GET",
+            "headers": {
+                "x-rapidapi-host": "community-open-weather-map.p.rapidapi.com",
+                "x-rapidapi-key": "GaYYNYwa8Mmshy6Kcq6usXTbjmjPp1JEfQujsn4Jy01PI4C442"
+            }
+        })
+            .then(response => {
+                response.text().then( (text) => {
+                    let response = text.split('test(');
+                    console.log(response);
+                    
+                    response = response[1].slice(0, -1);
+                    console.log(response);
+                    let json = JSON.parse(response);
+                    console.log(json);
+                    let temp = Math.round(json.main.temp - 273.15,1);
+                    let place = `${json.name}, ${json.sys.country}`;
+
+                    let el = document.querySelector(elemento);
+                    console.log(el);
+                    el.setAttribute("temp",temp);
+                    el.setAttribute("place",place);
+                    
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            });
+
+        }
+    </script>
+</body>
+
+</html>
